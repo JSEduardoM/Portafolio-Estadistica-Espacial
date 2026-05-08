@@ -156,7 +156,11 @@ function initCounters() {
         });
     }, { threshold: 0.5 });
 
-    stats.forEach(stat => observer.observe(stat));
+    stats.forEach(stat => {
+        // Ignoramos el contador de proyectos ya que lo maneja dinámicamente cargarProyectos
+        if (stat.id === 'count-proyectos') return;
+        observer.observe(stat);
+    });
 }
 
 function animateValue(obj, start, end, duration) {
@@ -184,6 +188,13 @@ async function cargarProyectos() {
         const response = await fetch(`manifest.json?v=${timestamp}`);
         if (!response.ok) throw new Error('Error manifest');
         const proyectos = await response.json();
+
+        // Actualizar contador real de proyectos en el Hero usando ID
+        const proyectStat = document.getElementById('count-proyectos');
+        if (proyectStat) {
+            proyectStat.setAttribute('data-target', proyectos.length);
+            animateValue(proyectStat, 0, proyectos.length, 2500);
+        }
 
         container.innerHTML = '';
         proyectos.forEach((p, idx) => {

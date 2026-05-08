@@ -3,7 +3,6 @@
         "title": "Introducción a la Estadística Espacial",
         "description": "Exploración de conceptos fundamentales de datos espaciales: tipos de datos geográficos, sistemas de coordenadas, y primeras visualizaciones con paquetes de R como sf y ggplot2.",
         "tags": ["introducción", "sf", "visualización"],
-        "html": "tareas/tarea-01-introduccion/presentacion.html",
         "pdf": "tareas/tarea-01-introduccion/ESTADISTICA ESPACIAL - MONOGRAFIA.pdf"
     },
     {
