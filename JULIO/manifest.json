@@ -1,0 +1,25 @@
+[
+    {
+        "title": "Introducción a la Estadística Espacial",
+        "description": "Exploración de conceptos fundamentales de datos espaciales: tipos de datos geográficos, sistemas de coordenadas, y primeras visualizaciones con paquetes de R como sf y ggplot2.",
+        "tags": ["introducción", "sf", "visualización"],
+        "html": "tareas/tarea-01-introduccion/presentacion.html",
+        "pdf": "tareas/tarea-01-introduccion/ESTADISTICA ESPACIAL - MONOGRAFIA.pdf"
+    },
+    {
+        "title": "Análisis Espacial de Pérdidas Agrícolas (ENA)",
+        "description": "Análisis geoespacial de la Encuesta Nacional Agropecuaria (ENA) 2014-2024. Cuantificación de pérdidas por heladas, plagas y sequías.",
+        "tags": ["ena", "riesgo", "mapa"],
+        "html": "tareas/tarea-02-analisis-espacial/mapa_interactivo_ena.html",
+        "r": "tareas/tarea-02-analisis-espacial/DATOS/main.R",
+        "thumbnail": "tareas/tarea-02-analisis-espacial/figuras/image.png"
+    },
+    {
+        "title": "Dashboard de Análisis de Vacas",
+        "description": "Tratamiento y análisis de hatos de vacas.",
+        "tags": ["analisis", "etl", "shiny"],
+        "html": "tareas/tarea-03-analisis-vacas/analisis_vacas.html",
+        "r": "tareas/tarea-03-analisis-vacas/app.R",
+        "thumbnail": "tareas/tarea-03-analisis-vacas/figuras/vaca.jpg"
+    }
+]

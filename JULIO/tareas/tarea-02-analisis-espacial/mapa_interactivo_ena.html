@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENA Spatial Dashboard v3.0 - The Spatial Nexus</title>
+    
+    <!-- External Resources -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #d93025;
+            --dark: #0f172a;
+            --sidebar-w: 360px;
+            --glass: rgba(255, 255, 255, 0.98);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            overflow: hidden;
+            color: var(--dark);
+        }
+
+        #map {
+            height: 100vh;
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* Dashboard UI */
+        .dashboard-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .sidebar {
+            position: absolute;
+            top: 20px; left: 20px;
+            width: var(--sidebar-w);
+            max-height: calc(100vh - 120px);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+            border: 1px solid #fff;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            background: linear-gradient(to bottom, #fff, transparent);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-header h1 {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .sidebar-content {
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Controls */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .ctrl-btn {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 10px 5px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            color: #64748b;
+        }
+
+        .ctrl-btn i { font-size: 1rem; }
+        .ctrl-btn:hover { border-color: var(--primary); background: #fffafb; }
+        .ctrl-btn.active { 
+            background: var(--primary); 
+            color: #fff; 
+            border-color: var(--primary);
+        }
+        .ctrl-btn.active i { color: #fff; }
+
+        /* Timeline Slider */
+        .timeline-container {
+            position: absolute;
+            bottom: 30px;
+            left: calc(var(--sidebar-w) + 60px);
+            right: 40px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid #fff;
+        }
+
+        .timeline-label {
+            font-family: 'Outfit';
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
+            min-width: 80px;
+        }
+
+        input[type="range"] {
+            flex-grow: 1;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* Map Style Switcher */
+        .style-switcher {
+            position: absolute;
+            top: 20px; right: 20px;
+            display: flex; gap: 8px;
+            background: var(--glass);
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            pointer-events: auto;
+            border: 1px solid #fff;
+        }
+
+        .style-btn {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            background: #f1f5f9;
+            color: #64748b;
+            transition: 0.3s;
+        }
+
+        .style-btn.active { background: var(--dark); color: #fff; }
+
+        /* Stats & Chart */
+        .stat-card {
+            background: var(--dark);
+            padding: 15px;
+            border-radius: 18px;
+            color: #fff;
+        }
+        .stat-card h4 { margin: 0; font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; }
+        .stat-card .val { font-size: 1.4rem; font-weight: 800; margin: 4px 0; font-family: 'Outfit'; }
+
+        .chart-container { height: 140px; width: 100%; margin-top: 10px; }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .sidebar { width: calc(100% - 40px); bottom: 100px; max-height: 40vh; }
+            .timeline-container { left: 20px; bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="bi bi-intersect text-danger"></i> ENA Timeline <span style="font-size: 0.7rem; opacity: 0.5;">Analytic Suite</span></h1>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="stat-card">
+                    <h4>Pérdidas Acumuladas</h4>
+                    <div class="val" id="totalVal">0 Ha</div>
+                    <div style="font-size: 0.7rem; color: #10b981;"><i class="bi bi-clock-history"></i> Datos Históricos 2014-2024</div>
+                </div>
+
+                <div>
+                    <span style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; display: block;">Filtrar Fenómeno</span>
+                    <div class="control-grid">
+                        <button class="ctrl-btn active" onclick="setFilter('all', this)"><i class="bi bi-grid-fill"></i> Todo</button>
+                        <button class="ctrl-btn" onclick="setFilter('Heladas', this)"><i class="bi bi-snow"></i> Heladas</button>
+                        <button class="ctrl-btn" onclick="setFilter('Plagas', this)"><i class="bi bi-bug"></i> Plagas</button>
+                        <button class="ctrl-btn" onclick="setFilter('Sequía', this)"><i class="bi bi-sun"></i> Sequía</button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="lossChart"></canvas>
+                </div>
+
+                <div style="background: #f8fafc; padding: 12px; border-radius: 12px; font-size: 0.75rem; border-left: 3px solid #f59e0b;">
+                    <i class="bi bi-info-circle-fill text-warning"></i> <strong>Nota:</strong> Desliza el tiempo para ver la progresión de daños.
+                </div>
+            </div>
+        </div>
+
+        <!-- Basemap Switcher -->
+        <div class="style-switcher">
+            <button class="style-btn active" onclick="setBasemap('voyager', this)" title="Cualquier"><i class="bi bi-map"></i></button>
+            <button class="style-btn" onclick="setBasemap('dark', this)" title="Noche"><i class="bi bi-moon-stars"></i></button>
+            <button class="style-btn" onclick="setBasemap('satellite', this)" title="Satélite"><i class="bi bi-globe-americas"></i></button>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline-container">
+            <div class="timeline-label" id="yearLabel">2024</div>
+            <input type="range" id="yearSlider" min="2014" max="2024" value="2024">
+            <button class="style-btn" onclick="togglePlay()" id="playBtn"><i class="bi bi-play-fill"></i></button>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Leaflet & Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        const map = L.map('map', { zoomControl: false }).setView([-9.19, -75.0152], 6);
+        L.control.zoom({ position: 'topright' }).addTo(map);
+
+        const tiles = {
+            voyager: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: 'CARTO' }),
+            dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: 'CARTO' }),
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri' })
+        };
+        tiles.voyager.addTo(map);
+
+        // Simulated Temporal Data
+        const baseData = [
+            { lat: -13.80796, lon: -73.51986, crop: "AVENA GRANO", ha: 4600, reason: "Heladas", year: 2024, color: "#d93025" },
+            { lat: -11.5, lon: -75.5, crop: "Granadilla", ha: 3000, reason: "Plagas", year: 2022, color: "#f59e0b" },
+            { lat: -12.0, lon: -76.0, crop: "Avena Grano", ha: 1302.8, reason: "Heladas", year: 2021, color: "#3b82f6" },
+            { lat: -15.8, lon: -70.0, crop: "Papa Color", ha: 335.0, reason: "Heladas", year: 2018, color: "#3b82f6" },
+            { lat: -14.2, lon: -71.5, crop: "Olluco", ha: 334.3, reason: "Heladas", year: 2016, color: "#3b82f6" },
+            { lat: -13.0, lon: -74.0, crop: "Trigo", ha: 326.5, reason: "Sequía", year: 2015, color: "#8b5cf6" },
+            { lat: -5.0, lon: -80.0, crop: "Arroz", ha: 200, reason: "Sequía", year: 2020, color: "#8b5cf6" },
+            { lat: -6.0, lon: -77.0, crop: "Café", ha: 450, reason: "Plagas", year: 2023, color: "#f59e0b" }
+        ];
+
+        let markers = L.layerGroup().addTo(map);
+        let currentYear = 2024;
+        let currentFilter = 'all';
+        let isPlaying = false;
+        let playInterval;
+
+        // Chart Setup
+        const ctx = document.getElementById('lossChart').getContext('2d');
+        let lossChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sierra', 'Selva', 'Costa'],
+                datasets: [{
+                    data: [6572, 3450, 200],
+                    backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } }
+            }
+        });
+
+        function updateDisplay() {
+            markers.clearLayers();
+            let total = 0;
+            const label = document.getElementById('yearLabel');
+            label.textContent = currentYear;
+
+            baseData.forEach(p => {
+                if (p.year <= currentYear && (currentFilter === 'all' || p.reason === currentFilter)) {
+                    total += p.ha;
+                    const marker = L.circleMarker([p.lat, p.lon], {
+                        radius: Math.sqrt(p.ha) * 0.85,
+                        fillColor: p.color,
+                        color: "#fff",
+                        weight: 2,
+                        fillOpacity: 0.8
+                    }).bindPopup(`<b>${p.crop}</b><br>Año: ${p.year}<br>Pérdida: ${p.ha} Ha`);
+                    markers.addLayer(marker);
+                }
+            });
+
+            document.getElementById('totalVal').textContent = total.toLocaleString() + " Ha";
+        }
+
+        // Timeline Controls
+        document.getElementById('yearSlider').addEventListener('input', function(e) {
+            currentYear = parseInt(e.target.value);
+            updateDisplay();
+        });
+
+        window.togglePlay = function() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            btn.innerHTML = isPlaying ? '<i class="bi bi-pause-fill"></i>' : '<i class="bi bi-play-fill"></i>';
+            
+            if (isPlaying) {
+                if (currentYear >= 2024) currentYear = 2014;
+                playInterval = setInterval(() => {
+                    currentYear++;
+                    document.getElementById('yearSlider').value = currentYear;
+                    updateDisplay();
+                    if (currentYear >= 2024) togglePlay();
+                }, 1000);
+            } else {
+                clearInterval(playInterval);
+            }
+        };
+
+        // Basemap Logic
+        window.setBasemap = function(style, el) {
+            document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            Object.values(tiles).forEach(t => map.removeLayer(t));
+            tiles[style].addTo(map);
+        };
+
+        // Filter Logic
+        window.setFilter = function(filter, el) {
+            document.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            currentFilter = filter;
+            updateDisplay();
+        };
+
+        updateDisplay();
+        setTimeout(() => map.invalidateSize(), 500);
+    </script>
+</body>
+</html>

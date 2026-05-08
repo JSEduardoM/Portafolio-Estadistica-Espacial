@@ -1,0 +1,17 @@
+*.csv
+*.zip
+*.rar
+*.7z
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+*.bak
+# Excluir bases de datos pesadas
+tareas/**/DATOS/*.csv
+tareas/**/DATOS/*.zip
