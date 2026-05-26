@@ -220,6 +220,7 @@ function crearTarjetaNexus(p, idx) {
     if (p.zip) types.push('zip');
     if (p.r) types.push('r');
     if (p.html) types.push('html');
+    if (p.video) types.push('video');
     if (p.thumbnail || p.img) types.push('img');
     col.dataset.type = types.join(' ');
 
@@ -229,6 +230,7 @@ function crearTarjetaNexus(p, idx) {
     if (p.r) extBadges += `<span class="badge-ext badge-r"><i class="bi bi-code-slash"></i> R</span> `;
     if (p.html) extBadges += `<span class="badge-ext badge-html"><i class="bi bi-globe"></i> HTML</span> `;
     if (p.zip) extBadges += `<span class="badge-ext badge-zip"><i class="bi bi-file-zip"></i> ZIP</span> `;
+    if (p.video) extBadges += `<span class="badge-ext badge-video"><i class="bi bi-play-btn"></i> VIDEO</span> `;
 
     // Generar Botones específicos
     let buttons = '';
@@ -241,6 +243,9 @@ function crearTarjetaNexus(p, idx) {
     if (p.html) {
         const btnLabel = p.tags && p.tags.includes('shiny') ? 'Ver Dashboard' : 'Ver Mapas';
         buttons += `<button onclick="abrirHTML('${p.html}', ${idx})" class="btn-ext btn-ext-html"><i class="bi bi-globe"></i> ${btnLabel}</button>`;
+    }
+    if (p.video) {
+        buttons += `<button onclick="abrirVideo('${p.video}')" class="btn-ext btn-ext-video"><i class="bi bi-play-circle"></i> Ver Video</button>`;
     }
     if (p.zip) {
         buttons += `<button onclick="window.open('${p.zip}', '_blank')" class="btn-ext btn-ext-zip"><i class="bi bi-file-zip"></i> Proyect ZIP</button>`;
@@ -455,10 +460,33 @@ window.abrirNuevaPestana = function () {
     }
 };
 
+window.abrirVideo = function (videoUrl) {
+    const modal = document.getElementById("modalVideo");
+    const visor = document.getElementById("visorVideo");
+
+    visor.src = videoUrl;
+    modal.style.display = "flex";
+    setTimeout(() => modal.classList.add("active"), 10);
+    document.body.style.overflow = "hidden";
+    visor.play().catch(err => console.log("Auto-play blocked or failed", err));
+};
+
+window.cerrarVideo = function () {
+    const modal = document.getElementById("modalVideo");
+    const visor = document.getElementById("visorVideo");
+    if (visor) {
+        visor.pause();
+        visor.src = "";
+    }
+    modal.classList.remove("active");
+    setTimeout(() => { modal.style.display = "none"; document.body.style.overflow = ""; }, 300);
+};
+
 // Tooltip / Interaction ESC
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         cerrarVisor();
         cerrarHTML();
+        cerrarVideo();
     }
 });

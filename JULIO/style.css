@@ -319,6 +319,7 @@ h1, h2, h3, h4, .navbar-brand {
 .badge-html { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
 .badge-zip { background: #faf5ff; color: #7c3aed; border: 1px solid #f3e8ff; }
 .badge-img { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+.badge-video { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
 
 .btn-ext {
   background: #ffffff;
@@ -344,6 +345,12 @@ h1, h2, h3, h4, .navbar-brand {
 
 .btn-ext-pdf, .btn-ext-html { color: #1e40af; border-color: #1e40af; }
 .btn-ext-r { color: #334155; border-color: #94a3b8; }
+.btn-ext-video { color: #ea580c; border-color: #ea580c; }
+.btn-ext-video:hover {
+  background: #fff7ed;
+  border-color: #c2410c;
+  color: #c2410c;
+}
 
 .portfolio-card h4 {
   color: var(--text-dark) !important;
@@ -470,7 +477,7 @@ h1, h2, h3, h4, .navbar-brand {
 /* ==========================================
    MODALS & VIEWERS (Nexus Style)
    ========================================== */
-#modalPDF, #modalHTML {
+#modalPDF, #modalHTML, #modalVideo {
   display: none;
   position: fixed;
   inset: 0;
@@ -482,11 +489,11 @@ h1, h2, h3, h4, .navbar-brand {
   transition: opacity 0.4s ease;
 }
 
-#modalPDF.active, #modalHTML.active {
+#modalPDF.active, #modalHTML.active, #modalVideo.active {
   opacity: 1;
 }
 
-#htmlHeader, #flipModalHeader {
+#htmlHeader, #flipModalHeader, #videoHeader {
   width: 100%;
   padding: 1.5rem 2rem;
   display: flex;
@@ -495,7 +502,7 @@ h1, h2, h3, h4, .navbar-brand {
   border-bottom: 1px solid var(--glass-border);
 }
 
-#htmlContent, #flipWrap {
+#htmlContent, #flipWrap, #videoContent {
   flex: 1;
   width: 100%;
   display: flex;
@@ -511,6 +518,15 @@ h1, h2, h3, h4, .navbar-brand {
   border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   background: #fff;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+
+#visorVideo {
+  max-width: 90%;
+  max-height: 80vh;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: #000;
   box-shadow: 0 30px 60px rgba(0,0,0,0.5);
 }
 

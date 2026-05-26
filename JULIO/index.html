@@ -96,6 +96,7 @@
                     <button class="filter-btn-nx" data-filter="r"><i class="bi bi-code-slash"></i> Código R</button>
                     <button class="filter-btn-nx" data-filter="img"><i class="bi bi-image"></i> Imágenes</button>
                     <button class="filter-btn-nx" data-filter="html"><i class="bi bi-globe"></i> HTML</button>
+                    <button class="filter-btn-nx" data-filter="video"><i class="bi bi-play-btn"></i> Videos</button>
                 </div>
             </div>
 
@@ -180,6 +181,20 @@
                 <div class="spinner"></div><span>Cargando vista…</span>
             </div>
             <iframe id="visorHTML"></iframe>
+        </div>
+    </div>
+
+    <div id="modalVideo">
+        <div id="videoHeader">
+            <span id="tituloVideo">Explicación en Video</span>
+            <div class="hdr-actions">
+                <button onclick="cerrarVideo()"><i class="bi bi-x-lg"></i> Cerrar</button>
+            </div>
+        </div>
+        <div id="videoContent">
+            <video id="visorVideo" controls controlsList="nodownload">
+                Tu navegador no soporta reproducción de video.
+            </video>
         </div>
     </div>
 

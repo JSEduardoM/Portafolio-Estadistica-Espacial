@@ -43,5 +43,18 @@
         ],
         "pdf": "tareas/tarea-04-distribucion-gaussiana/Solucion_de_Ejercicios_Distribucion_Gaussiana.pdf",
         "thumbnail": "tareas/tarea-04-distribucion-gaussiana/figuras/gaussian.png"
+    },
+    {
+        "title": "Inferencia Bayesiana: Modelos Autoregresivos Simultáneos",
+        "description": "Análisis de inferencia Bayesiana para modelos autoregresivos simultáneos (SAR) no Gaussianos en datos de área espacial. Incluye el artículo científico original de referencia y una videoclase explicativa detallada de sus desarrollos matemáticos.",
+        "tags": [
+            "bayesiano",
+            "sar",
+            "artículo",
+            "no-gaussiano"
+        ],
+        "pdf": "tareas/tarea-05-inferencia-bayesiana/Inferencia_Bayesiana_Modelos_Autoregresivos.pdf",
+        "video": "tareas/tarea-05-inferencia-bayesiana/Explicacion_Inferencia_Bayesiana_Autoregresiva.mp4",
+        "thumbnail": "tareas/tarea-05-inferencia-bayesiana/figuras/bayesian.png"
     }
 ]

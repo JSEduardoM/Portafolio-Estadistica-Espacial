@@ -21,6 +21,9 @@ Documentación técnica sobre los fundamentos de los datos espaciales y sistemas
 ### 4. 📄 Solución de Ejercicios: Distribución Gaussiana
 Desarrollo analítico de ejercicios prácticos sobre la distribución Gaussiana (normal) multivariante, funciones de densidad de probabilidad y sus aplicaciones geoestadísticas.
 
+### 5. 🎬 Inferencia Bayesiana: Modelos Autoregresivos Simultáneos (SAR)
+Análisis avanzado de inferencia Bayesiana para modelos autoregresivos simultáneos no Gaussianos. Esta entrega incluye el artículo de investigación de referencia en PDF y una videoclase explicativa detallada integrada en el portafolio.
+
 ---
 
 ## 🛠️ Stack Tecnológico
