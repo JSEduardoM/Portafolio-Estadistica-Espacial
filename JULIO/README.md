@@ -18,6 +18,9 @@ Herramienta de análisis para el tratamiento de datos de hatos de vacas, optimiz
 ### 3. 📄 Monografía: Introducción a la Estadística Espacial
 Documentación técnica sobre los fundamentos de los datos espaciales y sistemas de coordenadas.
 
+### 4. 📄 Solución de Ejercicios: Distribución Gaussiana
+Desarrollo analítico de ejercicios prácticos sobre la distribución Gaussiana (normal) multivariante, funciones de densidad de probabilidad y sus aplicaciones geoestadísticas.
+
 ---
 
 ## 🛠️ Stack Tecnológico
