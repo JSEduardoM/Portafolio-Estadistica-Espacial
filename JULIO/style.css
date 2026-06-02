@@ -283,6 +283,9 @@ h1, h2, h3, h4, .navbar-brand {
   box-shadow: 0 10px 25px rgba(0,0,0,0.03);
   transition: all 0.4s ease;
   border-top: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .portfolio-card.style-clean:hover {
