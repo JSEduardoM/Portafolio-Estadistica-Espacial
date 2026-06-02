@@ -269,9 +269,9 @@ function crearTarjetaNexus(p, idx) {
                 <div class="d-flex gap-2 flex-wrap mb-3">
                     ${extBadges}
                 </div>
-                <h4 class="fw-bold mb-3">${p.title}</h4>
-                <p class="text-muted small mb-4 flex-grow-1">${p.description}</p>
-                <div class="d-flex gap-2 flex-wrap mt-auto">
+                <h4 class="fw-bold mb-2">${p.title}</h4>
+                <p class="card-desc text-muted small mb-3 flex-grow-1">${p.description}</p>
+                <div class="card-btns d-flex gap-2 flex-wrap">
                     ${buttons}
                 </div>
             </div>
