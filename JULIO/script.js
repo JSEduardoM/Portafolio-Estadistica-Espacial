@@ -212,11 +212,8 @@ async function cargarProyectos() {
 
 function crearTarjetaNexus(p, idx) {
     const hasThumbnail = !!(p.thumbnail || p.img);
-    // Con imagen: ocupa col-12 en layout horizontal. Sin imagen: col normal
     const col = document.createElement('div');
-    col.className = hasThumbnail
-        ? `col-12 col-md-6 card-item nx-item card-has-img`
-        : `col-lg-4 col-md-6 card-item nx-item`;
+    col.className = `col-lg-4 col-md-6 card-item nx-item`;
     
     // Dataset type basado en extensiones para los nuevos filtros
     let types = [];
@@ -265,42 +262,21 @@ function crearTarjetaNexus(p, idx) {
                          </div>`;
     }
 
-    if (hasThumbnail) {
-        col.innerHTML = `
-            <div class="portfolio-card style-clean card-horizontal animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.1}s">
-                <div class="card-top-line"></div>
-                <div class="card-horizontal-inner">
-                    ${thumbnailHtml}
-                    <div class="card-nexus-body d-flex flex-column">
-                        <div class="d-flex gap-2 flex-wrap mb-3">
-                            ${extBadges}
-                        </div>
-                        <h4 class="fw-bold mb-3">${p.title}</h4>
-                        <p class="text-muted small mb-4 flex-grow-1">${p.description}</p>
-                        <div class="d-flex gap-2 flex-wrap mt-auto">
-                            ${buttons}
-                        </div>
-                    </div>
+    col.innerHTML = `
+        <div class="portfolio-card style-clean animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.1}s">
+            ${thumbnailHtml ? thumbnailHtml : '<div class="card-top-line"></div>'}
+            <div class="card-nexus-body d-flex flex-column">
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    ${extBadges}
+                </div>
+                <h4 class="fw-bold mb-3">${p.title}</h4>
+                <p class="text-muted small mb-4 flex-grow-1">${p.description}</p>
+                <div class="d-flex gap-2 flex-wrap mt-auto">
+                    ${buttons}
                 </div>
             </div>
-        `;
-    } else {
-        col.innerHTML = `
-            <div class="portfolio-card style-clean animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.1}s">
-                <div class="card-top-line"></div>
-                <div class="card-nexus-body d-flex flex-column h-100">
-                    <div class="d-flex gap-2 flex-wrap mb-3">
-                        ${extBadges}
-                    </div>
-                    <h4 class="fw-bold mb-3">${p.title}</h4>
-                    <p class="text-muted small mb-4 flex-grow-1">${p.description}</p>
-                    <div class="d-flex gap-2 flex-wrap mt-auto">
-                        ${buttons}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
+        </div>
+    `;
     return col;
 }
 
