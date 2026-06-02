@@ -275,6 +275,41 @@ h1, h2, h3, h4, .navbar-brand {
   box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
 }
 
+/* ==========================================
+   CARD THUMBNAIL (Image Preview)
+   ========================================== */
+.card-thumbnail-wrap {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  background: #e2e8f0;
+}
+
+.card-thumbnail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-thumbnail-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.18) 100%);
+  transition: opacity 0.4s ease;
+}
+
+.portfolio-card.style-clean:hover .card-thumbnail-img {
+  transform: scale(1.07);
+}
+
+.portfolio-card.style-clean:hover .card-thumbnail-overlay {
+  opacity: 0;
+}
+
 /* Portfolio Card Clean Style (Reference Image) */
 .portfolio-card.style-clean {
   background: #ffffff;
