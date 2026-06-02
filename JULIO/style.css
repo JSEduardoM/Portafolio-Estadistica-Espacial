@@ -281,10 +281,10 @@ h1, h2, h3, h4, .navbar-brand {
    ========================================== */
 
 
-/* Imagen — ocupa exactamente el 50% superior */
+/* Imagen — altura fija, el contenido debajo crece naturalmente */
 .card-thumbnail-wrap {
   position: relative;
-  height: 50%;        /* = 240px con la altura fija de arriba */
+  height: 220px;
   flex-shrink: 0;
   overflow: hidden;
   background: #cbd5e1;
@@ -324,6 +324,12 @@ h1, h2, h3, h4, .navbar-brand {
 }
 
 
+/* Col item — permite que la card estire al 100% de la fila */
+.nx-item {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Portfolio Card Clean Style */
 .portfolio-card.style-clean {
   background: #ffffff;
@@ -332,11 +338,10 @@ h1, h2, h3, h4, .navbar-brand {
   box-shadow: 0 10px 25px rgba(0,0,0,0.03);
   transition: all 0.4s ease;
   border-top: none;
-  /* Altura fija para split 50/50 */
-  height: 480px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  height: 100%; /* iguala altura con las otras tarjetas de la fila */
 }
 
 .portfolio-card.style-clean:hover {
@@ -354,26 +359,25 @@ h1, h2, h3, h4, .navbar-brand {
 .card-nexus-body {
   padding: 1.5rem 2rem;
   border-radius: 0 0 16px 16px;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;  /* permite que flex shrink funcione */
+  flex: 1;
 }
 
-/* Descripción limitada a 3 líneas — nunca empuja los botones */
+/* Descripción limitada a 3 líneas */
 .card-desc {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   flex-shrink: 1;
-  min-height: 0;
 }
 
-/* Botones siempre visibles al fondo */
+/* Botones siempre visibles — nunca se comprimen */
 .card-btns {
   flex-shrink: 0;
-  padding-top: 0.5rem;
+  padding-top: 0.75rem;
+  margin-top: auto;
 }
 
 
