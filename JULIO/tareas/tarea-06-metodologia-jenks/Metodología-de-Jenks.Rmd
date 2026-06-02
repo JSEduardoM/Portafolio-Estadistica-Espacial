@@ -1,0 +1,288 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+# CARGA DE LIBRERIAS
+
+```{r}
+library(haven)
+library(dplyr)
+library(geodata)
+library(sf)
+library(leaflet)
+library(htmlwidgets)
+library(stringi)
+library(stringr)
+library(classInt)
+library(leaflet.extras)
+```
+
+```{r}
+datos <- read_sav("C:/Users/User/Documents/SEMESTRE X/ESTADISTICA ESPACIAL/ENA_2014_2024.sav",
+  encoding = "latin1",
+  col_select = c(
+    "ANIO",
+    "CCDD",
+    "NOMBREDD",
+    "LONGITUD",
+    "LATITUD",
+    "ALTITUD",
+    "P229G_NOM",
+    "P229G_COD",
+    "P229H_CANT_ENT",
+    "P229H_UM",
+    "P229H_EQUIV",
+    "P229I_VAL"
+  )
+)
+head(datos)
+```
+# LIMPIEZA DE TEXTO
+```{r}
+datos <- datos %>%
+  mutate(NOMBREDD = toupper(trimws(NOMBREDD))) %>%
+  mutate(NOMBREDD = case_when(
+    str_detect(NOMBREDD, "APUR") ~ "APURIMAC",
+    str_detect(NOMBREDD, "MART") ~ "SAN MARTIN",
+    str_detect(NOMBREDD, "^JUN") ~ "JUNIN",
+    str_detect(NOMBREDD, "^H.*NU") ~ "HUANUCO",
+    TRUE ~ NOMBREDD
+  ))
+unique(datos$NOMBREDD)
+```
+```{r}
+datos <- datos %>%
+  mutate(NOMBREDD = toupper(trimws(NOMBREDD))) %>%
+  filter(NOMBREDD != "") %>%
+  mutate(NOMBREDD = case_when(
+    str_detect(NOMBREDD, "^AMAZON") ~ "AMAZONAS",
+    str_detect(NOMBREDD, "^APUR") ~ "APURIMAC",
+    str_detect(NOMBREDD, "^AREQUI") ~ "AREQUIPA",
+    str_detect(NOMBREDD, "^AYACUC") ~ "AYACUCHO",
+    str_detect(NOMBREDD, "^CAJAMA") ~ "CAJAMARCA",
+    str_detect(NOMBREDD, "^HUANCA") ~ "HUANCAVELICA",
+    str_detect(NOMBREDD, "^H.*NU") ~ "HUANUCO",
+    str_detect(NOMBREDD, "^JUN") ~ "JUNIN",
+    str_detect(NOMBREDD, "^LA LIB") ~ "LA LIBERTAD",
+    str_detect(NOMBREDD, "^LAMBAY") ~ "LAMBAYEQUE",
+    str_detect(NOMBREDD, "^MADRE") ~ "MADRE DE DIOS",
+    str_detect(NOMBREDD, "^MOQUEG") ~ "MOQUEGUA",
+    str_detect(NOMBREDD, "^SAN MA") ~ "SAN MARTIN",
+    str_detect(NOMBREDD, "^UCAYAL") ~ "UCAYALI",
+    TRUE ~ NOMBREDD
+  ))
+unique(datos$NOMBREDD)
+```
+```{r}
+datos_limpio <- datos %>% select(
+  -ALTITUD,
+  -P229I_VAL
+)
+datos_limpio <- datos_limpio %>%
+  filter(
+    !is.na(P229H_EQUIV),
+    !is.na(LONGITUD),
+    !is.na(LATITUD)
+  ) %>%
+  filter(
+    LONGITUD >= -82 & LONGITUD <= -68,
+    LATITUD >= -19 & LATITUD <= 0
+  )
+
+head(datos_limpio)
+```
+```{r}
+data.frame(
+  Variable = names(datos_limpio),
+  Vacios_NA = sapply(datos_limpio, \(x)
+  sum(is.na(x) | (is.character(x) & trimws(x) == "")))
+)
+```
+```{r}
+datos_limpio <- datos_limpio %>% filter(!is.na(P229H_EQUIV))
+datos_limpio <- datos_limpio %>% filter(!is.na(LONGITUD), !is.na(LATITUD))
+datos_limpio <- datos_limpio %>% filter(LONGITUD >= -82 & LONGITUD <= -68 & LATITUD >= -19 & LATITUD <= 0)
+datos_limpio <- datos_limpio %>% filter(P229H_EQUIV > 0)
+
+data.frame(
+  Variable = names(datos_limpio),
+  Vacios_NA = sapply(datos_limpio, \(x)
+  sum(is.na(x) | (is.character(x) & trimws(x) == "")))
+)
+```
+```{r}
+datos_limpio <- datos_limpio %>%
+  mutate(
+    P229G_NOM = case_when(
+      grepl("CAF", P229G_NOM) ~ "PULPA DE CAFÉ",
+      grepl("CA", P229G_NOM) &
+        grepl("IHUA", P229G_NOM) ~ "RASTROJO DE CAÑIHUA",
+      TRUE ~ P229G_NOM
+    )
+  )
+unique(datos_limpio$P229G_NOM)
+```
+```{r}
+datos_limpio$P229H_EQUIV <- as.numeric(
+  datos_limpio$P229H_EQUIV
+)
+class(datos_limpio$P229H_EQUIV)
+```
+```{r}
+jenks <- classIntervals(
+  datos_limpio$P229H_EQUIV,
+  n = 3,
+  style = "jenks"
+)
+
+jenks$brks
+```
+```{r}
+datos_limpio$clasificacion <- cut(
+  datos_limpio$P229H_EQUIV,
+  breaks = jenks$brks,
+  include.lowest = TRUE,
+  labels = c(
+    "Pequeño productor",
+    "Mediano productor",
+    "Productor masivo"
+  )
+)
+table(datos_limpio$clasificacion)
+```
+```{r}
+datos_sf <- st_as_sf(
+  datos_limpio,
+  coords = c("LONGITUD", "LATITUD"),
+  crs = 4326
+)
+```
+
+```{r}
+mapa <- leaflet(datos_sf) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    color = ~ case_when(
+      clasificacion == "Pequeño productor" ~ "green",
+      clasificacion == "Mediano productor" ~ "orange",
+      clasificacion == "Productor masivo" ~ "red"
+    ),
+    radius = 4,
+    stroke = FALSE,
+    fillOpacity = 0.7,
+    popup = ~ paste(
+      "<b>Departamento:</b>", NOMBREDD,
+      "<br><b>Producto:</b>", P229G_NOM,
+      "<br><b>Producción:</b>", P229H_EQUIV,
+      "<br><b>Clasificación:</b>", clasificacion
+    )
+  )
+
+mapa
+saveWidget(
+  mapa,
+  "mapa_productores.html",
+  selfcontained = TRUE
+)
+```
+```{r}
+heatmap <- leaflet(datos_sf) %>%
+  addTiles() %>%
+  addHeatmap(
+    lng = ~ st_coordinates(datos_sf)[, 1],
+    lat = ~ st_coordinates(datos_sf)[, 2],
+    intensity = ~ log(P229H_EQUIV),
+    blur = 45,
+    radius = 40,
+    gradient = c(
+      "blue",
+      "cyan",
+      "green",
+      "yellow",
+      "orange",
+      "red"
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    colors = c(
+      "blue",
+      "cyan",
+      "green",
+      "yellow",
+      "orange",
+      "red"
+    ),
+    labels = c(
+      "Muy baja",
+      "Baja",
+      "Media",
+      "Alta",
+      "Muy alta",
+      "Extrema"
+    ),
+    title = "Intensidad de Producción",
+    opacity = 1
+  ) %>%
+  addControl(
+    "<h3>Mapa de Calor de Producción Agrícola</h3>",
+    position = "topright"
+  )
+
+saveWidget(
+  heatmap,
+  "heatmap_produccion.html",
+  selfcontained = TRUE
+)
+heatmap
+```
+
+
+```{r}
+resumen_departamento <- datos_limpio %>%
+  group_by(NOMBREDD) %>%
+  summarise(
+    total_produccion = sum(P229H_EQUIV),
+    promedio_produccion = mean(P229H_EQUIV),
+    max_produccion = max(P229H_EQUIV),
+    productores = n()
+  ) %>%
+  arrange(desc(total_produccion))
+
+resumen_departamento
+```
+```{r}
+barplot(
+  resumen_departamento$total_produccion,
+  names.arg = resumen_departamento$NOMBREDD,
+  las = 2,
+  col = "darkgreen",
+  main = "Producción Total por Departamento",
+  ylab = "Producción"
+)
+```
+```{r}
+heatmap <- leaflet(datos_sf) %>%
+  addTiles() %>%
+  addHeatmap(
+    lng = ~ st_coordinates(datos_sf)[, 1],
+    lat = ~ st_coordinates(datos_sf)[, 2],
+    intensity = ~ log(P229H_EQUIV),
+    blur = 25,
+    radius = 30,
+    gradient = c(
+      "blue",
+      "cyan",
+      "green",
+      "yellow",
+      "orange",
+      "red"
+    )
+  )
+
+heatmap
+```
+

@@ -57,4 +57,18 @@
         "video": "tareas/tarea-05-inferencia-bayesiana/Explicacion_Inferencia_Bayesiana_Autoregresiva.mp4",
         "thumbnail": "tareas/tarea-05-inferencia-bayesiana/figuras/bayesian.png"
     }
+    ,
+    {
+        "title": "Producción Agrícola: Análisis con Metodología Jenks",
+        "description": "Estudio Geoespacial de la Producción Agrícola por Pisos Altitudinales en el Perú aplicando la Metodología de Cortes Naturales de Jenks.",
+        "tags": [
+            "producción",
+            "agricultura",
+            "jenks",
+            "mapa"
+        ],
+        "r": "tareas/tarea-06-metodologia-jenks/analisis_jenks.R",
+        "html": "tareas/tarea-06-metodologia-jenks/mapa_coropletico_departamentos.html",
+        "thumbnail": "tareas/tarea-06-metodologia-jenks/figuras/image.png"
+    }
 ]

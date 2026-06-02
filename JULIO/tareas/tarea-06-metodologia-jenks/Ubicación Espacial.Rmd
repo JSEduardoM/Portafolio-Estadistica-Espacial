@@ -1,0 +1,573 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# CARGA DE LIBRERIAS
+
+```{r}
+library(haven)
+library(dplyr)
+library(geodata)
+library(sf)
+library(leaflet)
+library(htmlwidgets)
+```
+
+# CARGA DE DATOS
+
+```{r}
+datos <- read_sav("D:/ENA_2014_2024/ENA_2014_2024.sav", encoding   = "latin1", col_select = c( "ANIO", "CCDD", "NOMBREDD", "CCPP", "NOMBREPV", "CCDI", "NOMBREDI", "CCCP", "NOMBRECP", "P321B", "P325B_1", "P325B_2", "P325B_3", "P325B_4", "P325B_5", "P325B_6", "P325B_7", "P326B_1", "P326B_2", "P326B_3", "P326B_4", "P326B_5", "P326B_6", "P326B_7", "P326B_8", "LONGITUD", "LATITUD"))
+```
+
+# LIMPIEZA DE DATOS 
+
+```{r}
+datos_filtrado <- datos %>% filter(!is.na(P321B))
+datos_filtrado <- datos_filtrado %>% mutate(uso_correcto = ifelse(P321B == 1, 1, 0))
+table(datos_filtrado$uso_correcto)
+```
+# LIMPIEZA DE TEXTO
+```{r}
+datos_filtrado <- datos_filtrado %>% mutate(NOMBREDD = case_when(
+      NOMBREDD == "AMAZON" ~ "AMAZONAS",
+      NOMBREDD == "ANCASH" ~ "ANCASH",
+      NOMBREDD == "APURA\u008d" ~ "APURIMAC",
+      NOMBREDD == "APURA\u008dMAC" ~ "APURIMAC",
+      NOMBREDD == "AREQUI" ~ "AREQUIPA",
+      NOMBREDD == "AYACUC" ~ "AYACUCHO",
+      NOMBREDD == "CAJAMA" ~ "CAJAMARCA",
+      NOMBREDD == "HUANCA" ~ "HUANCAVELICA",
+      NOMBREDD == "HUA\u0081NU" ~ "HUANUCO",
+      NOMBREDD == "HUA\u0081NUCO" ~ "HUANUCO",
+      NOMBREDD == "JUNA\u008dN" ~ "JUNIN",
+      NOMBREDD == "JUNIN" ~ "JUNIN",
+      NOMBREDD == "LA LIB" ~ "LA LIBERTAD",
+      NOMBREDD == "LAMBAY" ~ "LAMBAYEQUE",
+      NOMBREDD == "MADRE" ~ "MADRE DE DIOS",
+      NOMBREDD == "MOQUEG" ~ "MOQUEGUA",
+      NOMBREDD == "SAN MA" ~ "SAN MARTIN",
+      NOMBREDD == "SAN MARTA\u008dN" ~ "SAN MARTIN",
+      NOMBREDD == "UCAYAL" ~ "UCAYALI",
+      TRUE ~ NOMBREDD
+    ))
+
+datos_filtrado <- datos_filtrado %>% mutate(NOMBREDD = trimws(NOMBREDD)) %>% filter(NOMBREDD != "")
+unique(datos_filtrado$NOMBREDD)
+```
+# PUNTOS CON COORDENADAS
+
+```{r}
+datos_geo <- datos_filtrado %>% filter(
+    !is.na(LONGITUD), !is.na(LATITUD),
+    LONGITUD >= -82, LONGITUD <= -68,
+    LATITUD  >= -19, LATITUD  <=  0
+  )
+head(datos_geo)
+```
+# MAPA BASE DEL PERÚ
+
+```{r}
+mapa_peru <- gadm(country = "PER", level = 1, path = tempdir()) %>%
+  st_as_sf() %>%
+  mutate(NAME_1 = toupper(trimws(NAME_1)))
+```
+
+# ETIQUETAS
+
+```{r}
+etiquetas_325 <- c(
+  "1" = "Guantes", "2" = "Mascarilla", "3" = "Botas",
+  "4" = "Mameluco", "5" = "Lentes", "6" = "Otro", "7" = "NINGUNO"
+)
+
+etiquetas_326 <- c(
+  "1" = "Quema/incinera",        "2" = "Entierra",
+  "3" = "Arroja a canal",    "4" = "Deja en campo de cultivo",
+  "5" = "Triple lavado",         "6" = "Depósito almacén temporal",
+  "7" = "Otro", "NINGUNO"
+)
+
+COLORES <- c("#e74c3c","#3498db","#2ecc71","#f39c12","#9b59b6","#1abc9c","#e67e22")
+```
+
+# ESTILO - TOOLTIP
+
+```{r}
+css_tooltip <- paste0(
+  "font-family:'Segoe UI',Arial,sans-serif;",
+  "font-size:12px;line-height:1.7;",
+  "background:white;",
+  "border-radius:10px;",
+  "padding:10px 14px;",
+  "box-shadow:0 3px 12px rgba(0,0,0,0.22);",
+  "min-width:210px;max-width:290px;"
+)
+```
+
+# TOOLTIP
+
+```{r}
+header_tooltip <- function(nombre, color_borde = "#3498db") {
+  paste0(
+    "<div style='border-left:4px solid ", color_borde,
+    ";padding-left:8px;margin-bottom:6px;'>",
+    "<span style='font-size:14px;font-weight:700;color:#1a1a2e;'>",
+    nombre,
+    "</span></div>"
+  )
+}
+
+fila_dato <- function(etiqueta, valor, color_etiq = "#555", negrita_valor = TRUE) {
+  paste0(
+    "<div style='display:flex;justify-content:space-between;",
+    "border-bottom:1px solid #f0f0f0;padding:2px 0;'>",
+    "<span style='color:", color_etiq, ";'>", etiqueta, "</span>",
+    "<span style='margin-left:8px;'>",
+    if (negrita_valor) paste0("<b>", valor, "</b>") else valor,
+    "</span></div>"
+  )}
+
+barra_progreso <- function(porcentaje, color = "#2ecc71") {
+  pct <- min(max(as.numeric(porcentaje), 0), 100)
+  paste0(
+    "<div style='background:#eee;border-radius:4px;height:6px;margin:2px 0 4px;'>",
+    "<div style='width:", pct, "%;height:100%;background:", color,
+    ";border-radius:4px;'></div></div>"
+  )}
+
+hr_sep <- function() "<hr style='border:none;border-top:1px solid #eee;margin:6px 0;'>"
+
+bloque_coords <- function(lat, lon) {
+  paste0(
+    hr_sep(),
+    "<div style='color:#888;font-size:11px;'>",
+    "<b style='color:#555;'>📡 Coordenadas</b><br>",
+    fila_dato("Latitud", sprintf("%.5f°", as.numeric(lat)), "#666", FALSE),
+    fila_dato("Longitud", sprintf("%.5f°", as.numeric(lon)), "#666", FALSE),
+    "</div>"
+  )}
+```
+
+# RESUMEN POR DEPARTAMENTO
+
+```{r}
+resumen_dicotomico <- function(df, var) {df %>% group_by(NOMBREDD) %>%
+    summarise(
+      total = n(),
+      si = sum(.data[[var]] == 1, na.rm = TRUE),
+      porcentaje_si = round(si / total * 100, 1),
+      .groups = "drop"
+    )
+}
+
+resumen_multiple <- function(df, prefijo) {
+  vars <- grep(paste0("^", prefijo, "_"), names(df), value = TRUE)
+  df %>%
+    group_by(NOMBREDD) %>%
+    summarise(
+      total = n(),
+      across(all_of(vars), ~ round(mean(. == 1, na.rm = TRUE) * 100, 1), .names = "pct_{.col}"),
+      .groups = "drop"
+    ) %>%
+    rename_with(~ gsub(paste0("pct_", prefijo, "_"), "pct_", .), starts_with("pct_"))
+}
+
+primera_opcion <- function(df, prefijo, n_opc) {
+  vars <- grep(paste0("^", prefijo, "_"), names(df), value = TRUE)
+  nums <- as.numeric(gsub(paste0(".*", prefijo, "_"), "", vars))
+  apply(df[vars], 1, function(row) {
+    marcadas <- nums[which(row == 1)]
+    if (length(marcadas) == 0) NA else min(marcadas)
+  })
+}
+```
+
+# TOOLTIPS PARA DEPARTAMENTOS - PUNTOS
+```{r}
+tooltip_dep_dicot <- function(row) {
+  pct_si  <- round(as.numeric(row[["porcentaje_si"]]), 1)
+  pct_no  <- round(100 - pct_si, 1)
+  total   <- as.numeric(row[["total"]])
+  nombre  <- row[["NAME_1"]]
+  
+  paste0(
+    "<div style='", css_tooltip, "'>",
+    header_tooltip(nombre, "#e74c3c"),
+    fila_dato("Total encuestados", format(total, big.mark = ",")),
+    hr_sep(),
+    "<div style='color:#555;margin:4px 0 1px;'>so correcto</div>",
+    barra_progreso(pct_si, "#2ecc71"),
+    "<div style='display:flex;justify-content:space-between;margin-bottom:6px;'>",
+    "<span style='color:#2ecc71;font-weight:700;font-size:15px;'>", pct_si, "%</span>",
+    "<span style='color:#999;font-size:11px;'>(", round(total * pct_si / 100), " casos)</span>",
+    "</div>",
+    "<div style='color:#555;margin:4px 0 1px;'>so incorrecto</div>",
+    barra_progreso(pct_no, "#e74c3c"),
+    "<div style='display:flex;justify-content:space-between;'>",
+    "<span style='color:#e74c3c;font-weight:700;font-size:15px;'>", pct_no, "%</span>",
+    "<span style='color:#999;font-size:11px;'>(", round(total * pct_no / 100), " casos)</span>",
+    "</div>",
+    "</div>"
+  )
+}
+
+tooltip_punto_dicot <- function(df, var_punto) {
+  apply(df, 1, function(row) {
+
+    resp  <- as.numeric(row[[var_punto]])
+    es_si <- resp == 1
+
+    texto <- if (es_si) "Uso correcto" else "Uso incorrecto"
+    color <- if (es_si) "#2ecc71" else "#e74c3c"
+
+    paste0(
+      "<div style='", css_tooltip, "'>",
+      header_tooltip(row[["NOMBREDD"]], color),
+      fila_dato("Año", row[["ANIO"]]),
+      fila_dato("Respuesta", texto),
+      bloque_coords(row[["LATITUD"]], row[["LONGITUD"]]),
+      "</div>"
+    )
+  })
+}
+
+tooltip_dep_mult <- function(row_data, nombre_dep, total, etiquetas, colores) {
+  cols_pct <- grep("^pct_", names(row_data), value = TRUE)
+  nums     <- gsub("^pct_", "", cols_pct)
+  pcts     <- sapply(cols_pct, function(c) as.numeric(row_data[[c]]))
+  ord      <- order(pcts, decreasing = TRUE, na.last = TRUE)
+  
+  filas <- sapply(ord, function(i) {
+    num   <- nums[i]
+    etiq  <- ifelse(!is.na(etiquetas[num]), etiquetas[num], paste("Opción", num))
+    valor <- pcts[i]
+    color <- colores[as.numeric(num)]
+    if (is.na(color)) color <- "#aaa"
+    paste0(
+      "<div style='margin:3px 0;'>",
+      "<div style='display:flex;justify-content:space-between;font-size:12px;'>",
+      "<span>",
+      "<span style='display:inline-block;width:10px;height:10px;border-radius:50%;",
+      "background:", color, ";margin-right:5px;vertical-align:middle;'></span>",
+      "<b>", num, ".</b> ", etiq,
+      "</span>",
+      "<span style='font-weight:700;'>",
+      ifelse(is.na(valor), "SD", paste0(valor, "%")),
+      "</span>",
+      "</div>",
+      barra_progreso(ifelse(is.na(valor), 0, valor), color),
+      "</div>"
+    )
+  })
+  
+  paste0(
+    "<div style='", css_tooltip, "'>",
+    header_tooltip(nombre_dep, "#3498db"),
+    fila_dato("Total encuestados", format(as.numeric(total), big.mark = ",")),
+    hr_sep(),
+    "<div style='font-size:11px;color:#888;margin-bottom:4px;'>Ordenado por frecuencia ↓</div>",
+    paste(filas, collapse = ""),
+    "</div>"
+  )
+}
+
+tooltip_punto_mult_v2 <- function(df, prefijo, etiquetas, colores) {
+  vars <- grep(paste0("^", prefijo, "_"), names(df), value = TRUE)
+  nums <- gsub(paste0(".*", prefijo, "_"), "", vars)
+  
+  apply(df, 1, function(row) {
+    marcadas <- nums[which(row[vars] == "1")]
+    
+    items_si <- if (length(marcadas) == 0) {
+      "<span style='color:#aaa;font-style:italic;'>Ninguna marcada</span>"
+    } else {
+      paste(sapply(marcadas, function(n) {
+        etiq  <- ifelse(!is.na(etiquetas[n]), etiquetas[n], paste("Opción", n))
+        color <- colores[as.numeric(n)]
+        if (is.na(color)) color <- "#aaa"
+        paste0(
+          "<div style='margin:2px 0;'>",
+          "<span style='display:inline-block;width:8px;height:8px;border-radius:50%;",
+          "background:", color, ";margin-right:5px;vertical-align:middle;'></span>",
+          "<b>", n, ".</b> ", etiq,
+          "</div>"
+        )
+      }), collapse = "")
+    }
+    
+    paste0(
+      "<div style='", css_tooltip, "'>",
+      header_tooltip(row[["NOMBREDD"]], "#9b59b6"),
+      fila_dato("🗓️ Año", row[["ANIO"]]),
+      hr_sep(),
+      "<div style='font-size:11px;color:#555;margin-bottom:4px;'><b> Opciones marcadas:</b></div>",
+      items_si,
+      bloque_coords(row[["LATITUD"]], row[["LONGITUD"]]),
+      "</div>"
+    )
+  })
+}
+```
+
+# ELEMENTOS
+```{r}
+html_leyenda_recuadro <- function(titulo, etiquetas, colores) {
+  items <- paste(sapply(seq_along(etiquetas), function(i) {
+    paste0(
+      "<span style='display:inline-block;width:12px;height:12px;border-radius:50%;",
+      "background:", colores[i], ";margin-right:6px;vertical-align:middle;'></span>",
+      "<b>", names(etiquetas)[i], ".</b> ", etiquetas[i]
+    )
+  }), collapse = "<br>")
+  paste0(
+    "<div style='background:white;padding:10px 14px;border-radius:8px;",
+    "box-shadow:0 1px 5px rgba(0,0,0,0.3);font-size:12px;line-height:1.8;'>",
+    "<b style='font-size:13px;'>", titulo, "</b><br>", items, "</div>"
+  )
+}
+
+html_titulo_recuadro <- function(titulo, subtitulo = "") {
+  paste0(
+    "<div style='background:white;padding:8px 12px;border-radius:6px;",
+    "box-shadow:0 1px 4px rgba(0,0,0,0.3);font-size:14px;'>",
+    "<b>", titulo, "</b>",
+    if (subtitulo != "") paste0("<br><span style='font-size:12px;color:#555;'>", subtitulo, "</span>"),
+    "</div>"
+  )
+}
+```
+
+# CREAR MAPA
+```{r}
+crear_mapa_dicotomico <- function(mapa_base, resumen, datos_puntos,
+                                  var_punto, titulo, nombre_archivo) {
+  
+  mapa_join <- mapa_base %>%
+    left_join(resumen, by = c("NAME_1" = "NOMBREDD"))
+  
+  # Tooltips como lista HTML (fuera del objeto sf)
+  tooltips_dep <- lapply(1:nrow(mapa_join), function(i) {
+    row <- as.list(st_drop_geometry(mapa_join[i, ]))
+    htmltools::HTML(tooltip_dep_dicot(row))
+  })
+  
+  pal_dep   <- colorNumeric("YlOrRd", domain = mapa_join$porcentaje_si, na.color = "#cccccc")
+  pal_punto <- colorFactor(c("#e74c3c", "#2ecc71"), domain = c(0, 1))
+  
+  tt_puntos <- tooltip_punto_dicot(datos_puntos, var_punto)
+  
+  mapa_out <- leaflet() %>%
+    addProviderTiles(providers$CartoDB.Positron) %>%
+    addPolygons(
+      data             = mapa_join,
+      fillColor        = ~pal_dep(porcentaje_si),
+      fillOpacity      = 0.6,
+      color            = "white",
+      weight           = 1.5,
+      label            = tooltips_dep,
+      labelOptions     = labelOptions(
+        style = list("padding" = "0px"),
+        html = TRUE,
+        noHide = FALSE
+      ),
+      highlightOptions = highlightOptions(weight = 3, color = "#333",
+                                          fillOpacity = 0.9, bringToFront = FALSE),
+      group = "Departamentos"
+    ) %>%
+    addCircleMarkers(
+      data          = datos_puntos,
+      lng           = ~LONGITUD,
+      lat           = ~LATITUD,
+      radius        = 4,
+      weight        = 0.8,
+      opacity       = 1,
+      color         = ~pal_punto(get(var_punto)),
+      fillColor     = ~pal_punto(get(var_punto)),
+      fillOpacity   = 0.85,
+      stroke        = TRUE,
+      label         = lapply(tt_puntos, htmltools::HTML),
+      labelOptions  = labelOptions(style = list("padding" = "0px"), html = TRUE, noHide = FALSE),
+      group         = "Puntos individuales"
+    ) %>%
+    addLegend(
+      pal      = pal_dep,
+      values   = mapa_join$porcentaje_si,
+      title    = "% Uso correcto",
+      position = "bottomright",
+      labFormat = labelFormat(suffix = "%")
+    ) %>%
+    addLegend(
+      colors   = c("#2ecc71", "#e74c3c"),
+      labels   = c("Sí (correcto)", "No (incorrecto)"),
+      title    = "Respuesta individual",
+      position = "bottomleft"
+    ) %>%
+    addLayersControl(
+      overlayGroups = c("Departamentos", "Puntos individuales"),
+      options = layersControlOptions(collapsed = FALSE)
+    ) %>%
+    addControl(
+      html     = html_titulo_recuadro(titulo, "Pasa el cursor sobre polígonos o puntos para ver detalles"),
+      position = "topright"
+    )
+  
+  saveWidget(mapa_out, nombre_archivo, selfcontained = FALSE)
+  browseURL(nombre_archivo)
+  message("✓ Guardado: ", nombre_archivo)
+  return(mapa_out)
+}
+
+crear_mapa_multiple <- function(mapa_base, resumen_mult, datos_puntos,
+                                prefijo, etiquetas, titulo, titulo_leyenda,
+                                nombre_archivo) {
+
+  n_opc <- length(etiquetas)
+  colores <- COLORES[seq_len(n_opc)]
+
+  col_pcts <- grep("^pct_", names(resumen_mult), value = TRUE)
+  if (length(col_pcts) == 0) stop("No existen columnas pct_ en resumen_mult")
+
+  nums_opc <- sub("^pct_", "", col_pcts)
+
+  mapa_join <- mapa_base %>%
+    left_join(resumen_mult, by = c("NAME_1" = "NOMBREDD")) %>%
+    mutate(
+      opcion_max = apply(st_drop_geometry(.)[col_pcts], 1, function(row) {
+        row <- as.numeric(row)
+        if (all(is.na(row))) return(NA)
+        as.numeric(nums_opc[which.max(row)])
+      })
+    )
+
+  tooltips_dep <- lapply(seq_len(nrow(mapa_join)), function(i) {
+    row <- as.list(st_drop_geometry(mapa_join[i, ]))
+    htmltools::HTML(
+      tooltip_dep_mult(
+        row_data   = row,
+        nombre_dep = row[["NAME_1"]],
+        total      = row[["total"]],
+        etiquetas  = etiquetas,
+        colores    = colores
+      )
+    )
+  })
+
+  pal_dep <- colorFactor(colores, domain = seq_len(n_opc), na.color = "#cccccc")
+
+  primera <- primera_opcion(datos_puntos, prefijo, n_opc)
+
+  colores_pt <- colorFactor(colores, domain = seq_len(n_opc), na.color = "#aaaaaa")(primera)
+
+  tt_puntos <- tooltip_punto_mult_v2(datos_puntos, prefijo, etiquetas, colores)
+
+  mapa_out <- leaflet() %>%
+    addProviderTiles(providers$CartoDB.Positron) %>%
+
+    addPolygons(
+      data        = mapa_join,
+      fillColor   = ~pal_dep(opcion_max),
+      fillOpacity = 0.5,
+      color       = "white",
+      weight      = 1.5,
+      label       = tooltips_dep,
+      labelOptions = labelOptions(
+        style = list("padding" = "0px"),
+        html = TRUE,
+        noHide = FALSE
+      ),
+      highlightOptions = highlightOptions(
+        weight = 3,
+        color = "#333",
+        fillOpacity = 0.85,
+        bringToFront = FALSE
+      ),
+      group = "Departamentos"
+    ) %>%
+
+    addCircleMarkers(
+      data        = datos_puntos,
+      lng         = ~LONGITUD,
+      lat         = ~LATITUD,
+      radius      = 4,
+      weight      = 0.8,
+      color       = colores_pt,
+      fillColor   = colores_pt,
+      fillOpacity = 0.85,
+      stroke      = TRUE,
+      label       = lapply(tt_puntos, htmltools::HTML),
+      labelOptions = labelOptions(
+        style = list("padding" = "0px"),
+        html = TRUE,
+        noHide = FALSE
+      ),
+      group = "Puntos individuales"
+    ) %>%
+
+    addControl(
+      html     = html_leyenda_recuadro(titulo_leyenda, etiquetas, colores),
+      position = "bottomright"
+    ) %>%
+
+    addLayersControl(
+      overlayGroups = c("Departamentos", "Puntos individuales"),
+      options = layersControlOptions(collapsed = FALSE)
+    ) %>%
+
+    addControl(
+      html     = html_titulo_recuadro(
+        titulo,
+        "Color = opción más frecuente (depto) / primera marcada (punto)"
+      ),
+      position = "topright"
+    )
+
+  saveWidget(mapa_out, nombre_archivo, selfcontained = FALSE)
+  browseURL(nombre_archivo)
+  message("✓ Guardado: ", nombre_archivo)
+
+  return(mapa_out)
+}
+```
+
+# GENERAR LOS 3 MAPAS
+
+```{r}
+resumen_321      <- resumen_dicotomico(datos_filtrado, "uso_correcto")
+resumen_325_mult <- resumen_multiple(datos_filtrado, "P325B")
+resumen_326_mult <- resumen_multiple(datos_filtrado, "P326B")
+
+mapa_p321 <- crear_mapa_dicotomico(
+  mapa_base      = mapa_peru,
+  resumen        = resumen_321,
+  datos_puntos   = datos_geo,
+  var_punto      = "uso_correcto",
+  titulo         = "P321B: Uso correcto de plaguicidas",
+  nombre_archivo = "mapa_p321b.html"
+)
+
+mapa_p325 <- crear_mapa_multiple(
+  mapa_base      = mapa_peru,
+  resumen_mult   = resumen_325_mult,
+  datos_puntos   = datos_geo,
+  prefijo        = "P325B",
+  etiquetas      = etiquetas_325,
+  titulo         = "P325B: Equipo de protección para plaguicidas",
+  titulo_leyenda = "Tipo de protección",
+  nombre_archivo = "mapa_p325b.html"
+)
+
+mapa_p326 <- crear_mapa_multiple(
+  mapa_base      = mapa_peru,
+  resumen_mult   = resumen_326_mult,
+  datos_puntos   = datos_geo,
+  prefijo        = "P326B",
+  etiquetas      = etiquetas_326,
+  titulo         = "P326B: Manejo de envases vacíos de plaguicidas",
+  titulo_leyenda = "Tipo de manejo",
+  nombre_archivo = "mapa_p326b.html"
+)
+
+```
+
+
