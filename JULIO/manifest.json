@@ -1,5 +1,18 @@
 [
     {
+        "title": "Artículo: Revisión y Aplicación Empírica en Pequeñas Propiedades del Perú",
+        "description": "Revisión bibliográfica y aplicación empírica de métodos de estadística espacial aplicados a la agricultura de pequeñas propiedades (smallholding) en el Perú. Análisis de autocorrelación espacial y patrones regionales.",
+        "tags": [
+            "artículo",
+            "revisión",
+            "smallholding",
+            "perú",
+            "autocorrelación"
+        ],
+        "pdf": "tareas/tarea-00-articulo_1/REVIEW AND EMPIRICAL APPLICATION TO SMALLHOLDING IN PERU_V1.pdf",
+        "thumbnail": "tareas/tarea-00-articulo_1/thumbnail.png"
+    },
+    {
         "title": "Introducción a la Estadística Espacial",
         "description": "Exploración de conceptos fundamentales de datos espaciales: tipos de datos geográficos, sistemas de coordenadas, y primeras visualizaciones con paquetes de R como sf y ggplot2.",
         "tags": [
@@ -56,8 +69,7 @@
         "pdf": "tareas/tarea-05-inferencia-bayesiana/Inferencia_Bayesiana_Modelos_Autoregresivos.pdf",
         "video": "tareas/tarea-05-inferencia-bayesiana/Explicacion_Inferencia_Bayesiana_Autoregresiva.mp4",
         "thumbnail": "tareas/tarea-05-inferencia-bayesiana/figuras/bayesian.png"
-    }
-    ,
+    },
     {
         "title": "Producción Agrícola: Análisis con Metodología Jenks",
         "description": "Estudio Geoespacial de la Producción Agrícola por Pisos Altitudinales en el Perú aplicando la Metodología de Cortes Naturales de Jenks.",
@@ -70,5 +82,19 @@
         "r": "tareas/tarea-06-metodologia-jenks/analisis_jenks.R",
         "html": "tareas/tarea-06-metodologia-jenks/mapa_coropletico_departamentos.html",
         "thumbnail": "tareas/tarea-06-metodologia-jenks/figuras/image.png"
+    },
+    {
+        "title": "Análisis Espacial con el Índice de Moran",
+        "description": "Cálculo y visualización interactiva del Índice de Moran Global y Local (LISA). Incluye análisis aplicado a la producción agrícola (ENA) en Perú y el dataset clásico SIDS de Carolina del Norte.",
+        "tags": [
+            "moran",
+            "autocorrelación",
+            "shiny",
+            "lisa"
+        ],
+        "pdf": "tareas/tarea-07-indice-moran/Informe_Tarea07_Moran.pdf",
+        "r": "tareas/tarea-07-indice-moran/app.R",
+        "html": "https://julio-eduardo.shinyapps.io/tarea-07-indice-moran/",
+        "thumbnail": "tareas/tarea-07-indice-moran/mapa_lisa.jpeg"
     }
 ]

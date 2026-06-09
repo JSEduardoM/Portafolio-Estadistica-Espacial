@@ -1,0 +1,13 @@
+name: tarea-07-indice-moran
+title:
+username: julio-eduardo
+account: julio-eduardo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17487953
+bundleId: 12105207
+url: https://julio-eduardo.shinyapps.io/tarea-07-indice-moran/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: INDICE-MORAN.pdf|Informe_Tarea07_Moran.tex|mapa_lisa.jpeg|mapa_variable.jpeg|moran_scatterplot.jpeg|preprocesar_ena.R
