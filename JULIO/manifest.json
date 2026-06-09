@@ -20,7 +20,8 @@
             "sf",
             "visualización"
         ],
-        "pdf": "tareas/tarea-01-introduccion/ESTADISTICA ESPACIAL - MONOGRAFIA.pdf"
+        "pdf": "tareas/tarea-01-introduccion/ESTADISTICA ESPACIAL - MONOGRAFIA.pdf",
+        "thumbnail": "tareas/tarea-01-introduccion/figuras/thumbnail.png"
     },
     {
         "title": "Dashboard: Pérdidas Agrícolas (ENA)",
