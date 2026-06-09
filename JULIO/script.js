@@ -355,9 +355,25 @@ window.abrirVisor = async function (pdfUrl) {
         if (typeof St !== 'undefined' && St.PageFlip) {
             if (pageFlip) pageFlip.destroy();
             
-            // Dimensiones más amplias para pantallas modernas
-            const w = window.innerWidth > 1400 ? 700 : 550;
-            const h = window.innerWidth > 1400 ? 950 : 800;
+            // Dimensiones responsivas según tamaño de pantalla
+            let w, h;
+            const vw = window.innerWidth;
+            if (vw <= 480) {
+                w = Math.floor(vw * 0.46); // dos páginas
+                h = Math.floor(w * 1.4);
+            } else if (vw <= 768) {
+                w = Math.floor(vw * 0.44);
+                h = Math.floor(w * 1.38);
+            } else if (vw <= 1200) {
+                w = 420;
+                h = 580;
+            } else if (vw <= 1400) {
+                w = 550;
+                h = 800;
+            } else {
+                w = 700;
+                h = 950;
+            }
 
             pageFlip = new St.PageFlip(flipBook, {
                 width: w, 

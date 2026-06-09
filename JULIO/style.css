@@ -85,12 +85,17 @@ h1, h2, h3, h4, .navbar-brand {
   border: 1px solid var(--glass-border);
   border-radius: 50px;
   padding: 0.6rem 1.5rem !important;
+  max-width: calc(100% - 2rem);
 }
 
 .navbar-brand {
   font-weight: 800;
   color: #fff !important;
-  font-size: 1.4rem;
+  font-size: clamp(0.85rem, 3.5vw, 1.4rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55vw;
 }
 
 .navbar-brand span {
@@ -178,7 +183,8 @@ h1, h2, h3, h4, .navbar-brand {
 /* Bento Stats Boxes */
 .hero-stats-bento {
   display: flex;
-  gap: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .stat-box {
@@ -186,7 +192,8 @@ h1, h2, h3, h4, .navbar-brand {
   border: 1px solid var(--glass-border);
   padding: 1.5rem;
   border-radius: var(--radius-md);
-  min-width: 140px;
+  min-width: 120px;
+  flex: 1;
   transition: transform 0.3s;
 }
 
@@ -241,13 +248,19 @@ h1, h2, h3, h4, .navbar-brand {
   padding: 0;
   border-radius: 0;
   border: none;
+  /* Scroll horizontal nativo en mobile */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  padding-bottom: 4px;
 }
+.filter-nexus::-webkit-scrollbar { display: none; }
 
 .filter-btn-nx {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   color: #64748b;
-  padding: 0.6rem 1.4rem;
+  padding: 0.55rem 1.1rem;
   border-radius: 50px;
   font-weight: 600;
   font-size: 0.9rem;
@@ -256,6 +269,8 @@ h1, h2, h3, h4, .navbar-brand {
   align-items: center;
   gap: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .filter-btn-nx i {
@@ -357,7 +372,7 @@ h1, h2, h3, h4, .navbar-brand {
 }
 
 .card-nexus-body {
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 1.5rem;
   border-radius: 0 0 16px 16px;
   display: flex;
   flex-direction: column;
@@ -488,7 +503,7 @@ h1, h2, h3, h4, .navbar-brand {
   color: var(--text-dark);
 }
 
-.py-huge { padding: 120px 0; }
+.py-huge { padding: 100px 0; }
 
 .bento-contact {
   display: grid;
@@ -574,11 +589,23 @@ h1, h2, h3, h4, .navbar-brand {
 
 #htmlHeader, #flipModalHeader, #videoHeader {
   width: 100%;
-  padding: 1.5rem 2rem;
+  padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   border-bottom: 1px solid var(--glass-border);
+  flex-wrap: wrap;
+}
+
+#tituloModal, #tituloHTML, #tituloVideo {
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40%;
 }
 
 #htmlContent, #flipWrap, #videoContent {
@@ -609,15 +636,24 @@ h1, h2, h3, h4, .navbar-brand {
   box-shadow: 0 30px 60px rgba(0,0,0,0.5);
 }
 
+.hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .hdr-actions button {
   background: rgba(0, 242, 255, 0.1) !important;
   border: 1px solid var(--accent) !important;
   color: var(--accent) !important;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.9rem;
   border-radius: 8px;
   font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: 0.3s;
+  white-space: nowrap;
 }
 
 .hdr-actions button:hover {
@@ -706,20 +742,333 @@ h1, h2, h3, h4, .navbar-brand {
 }
 
 /* ==========================================
-   RESPONSIVE
+   RESPONSIVE — TABLET (≤992px)
    ========================================== */
 @media (max-width: 992px) {
-  .bento-contact { grid-template-columns: 1fr; }
-  .hero-main-title { font-size: 3.5rem; }
-  .hero-stats-bento { flex-wrap: wrap; }
+  .bento-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-main-title {
+    font-size: clamp(2.4rem, 7vw, 3.5rem);
+  }
+
+  .hero-stats-bento {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .spatial-bg-alt {
+    padding: 70px 0;
+  }
+
+  .py-huge {
+    padding: 70px 0;
+  }
 }
 
+/* ==========================================
+   RESPONSIVE — MOBILE (≤768px)
+   ========================================== */
 @media (max-width: 768px) {
-  .contact-grid { grid-template-columns: 1fr; }
-  .filter-nexus { 
-    width: 100%; 
-    overflow-x: auto; 
-    white-space: nowrap;
+
+  /* ---- Navbar ---- */
+  .navbar {
+    padding: 0.8rem 0;
+  }
+
+  .glass-nav {
+    border-radius: 20px;
+    padding: 0.5rem 1rem !important;
+  }
+
+  /* Menú desplegado en mobile: fondo sólido */
+  .navbar-collapse {
+    background: rgba(5, 10, 21, 0.97);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    border: 1px solid var(--glass-border);
+  }
+
+  .navbar-nav {
+    gap: 0.3rem !important;
+  }
+
+  .nav-link {
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+  }
+
+  .nav-link:hover {
+    background: rgba(0, 242, 255, 0.08);
+  }
+
+  .navbar-toggler {
+    border: none;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .navbar-toggler:focus { box-shadow: none; }
+
+  .navbar-toggler .bi-list {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  /* ---- Hero ---- */
+  #inicio .row {
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+
+  .badge-spatial {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.9rem;
+  }
+
+  .hero-main-title {
+    font-size: clamp(2rem, 11vw, 2.8rem);
+    margin-bottom: 1rem;
+  }
+
+  .hero-lead {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  .hero-stats-bento {
+    margin-top: 2rem !important;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .stat-box {
+    padding: 1rem 0.8rem;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-size: 1.7rem;
+  }
+
+  /* ---- Portfolio Section ---- */
+  .spatial-bg-alt {
+    padding: 50px 0;
+  }
+
+  #portafolio .d-flex.justify-content-between {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+
+  #portafolio h2.display-5 {
+    font-size: 1.8rem;
+  }
+
+  .filter-nexus {
+    width: 100%;
+    overflow-x: auto;
     justify-content: flex-start;
+    padding-bottom: 6px;
+  }
+
+  .filter-btn-nx {
+    font-size: 0.82rem;
+    padding: 0.45rem 0.9rem;
+    gap: 6px;
+  }
+
+  .filter-btn-nx i {
+    font-size: 0.95rem;
+  }
+
+  /* Cards en mobile: 1 columna */
+  .col-lg-4.col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .card-thumbnail-wrap {
+    height: 180px;
+  }
+
+  .card-nexus-body {
+    padding: 1rem 1.1rem;
+  }
+
+  .card-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-ext {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+  }
+
+  /* ---- Contact ---- */
+  .py-huge {
+    padding: 50px 0;
+  }
+
+  .bento-contact {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .contact-main h2.display-4 {
+    font-size: 2rem;
+  }
+
+  .contact-card-nx {
+    padding: 1.3rem;
+  }
+
+  /* ---- Modales — Header ---- */
+  #htmlHeader,
+  #flipModalHeader,
+  #videoHeader {
+    padding: 0.75rem 1rem;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  #tituloModal,
+  #tituloHTML,
+  #tituloVideo {
+    font-size: 0.8rem;
+    max-width: 35%;
+  }
+
+  .hdr-actions {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .hdr-actions button {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+  }
+
+  /* Zoom controls más compactos */
+  #zoomControls {
+    padding: 4px 10px;
+    gap: 6px;
+    margin-right: 6px;
+  }
+
+  #zoomLevel {
+    font-size: 0.8rem;
+    min-width: 38px;
+  }
+
+  /* ---- Modal PDF ---- */
+  #htmlContent, #flipWrap, #videoContent {
+    padding: 0.75rem;
+  }
+
+  /* FlipBook: ocupa toda la pantalla menos el header */
+  #flipBook {
+    width: 95vw !important;
+    height: 70vh !important;
+  }
+
+  #flipPrev, #flipNext {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+
+  /* Modal HTML iframe */
+  #visorHTML {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Modal Video */
+  #visorVideo {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 10px;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE — SMALL MOBILE (≤480px)
+   ========================================== */
+@media (max-width: 480px) {
+
+  .navbar-brand {
+    font-size: 0.8rem;
+    max-width: 50vw;
+  }
+
+  .hero-main-title {
+    font-size: clamp(1.8rem, 12vw, 2.4rem);
+  }
+
+  .hero-stats-bento {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stat-val {
+    font-size: 1.4rem;
+  }
+
+  .stat-lbl {
+    font-size: 0.7rem;
+  }
+
+  .badge-spatial {
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+  }
+
+  .filter-btn-nx {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .btn-ext {
+    font-size: 0.78rem;
+    padding: 0.45rem 0.75rem;
+  }
+
+  #flipBook {
+    width: 98vw !important;
+    height: 65vh !important;
+  }
+
+  /* Header modal: ocultar texto del zoom, solo mostrar +/- */
+  #zoomLevel { display: none; }
+
+  #zoomControls {
+    padding: 4px 8px;
+    margin-right: 4px;
+  }
+
+  .hdr-actions button {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  #tituloModal,
+  #tituloHTML,
+  #tituloVideo {
+    font-size: 0.75rem;
+    max-width: 28%;
   }
 }
