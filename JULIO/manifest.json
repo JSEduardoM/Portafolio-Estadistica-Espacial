@@ -1,6 +1,6 @@
 [
     {
-        "title": "Artículo: Revisión y Aplicación Empírica en Pequeñas Propiedades del Perú",
+        "title": "Artículo Final Unidad 1: Revisión y Aplicación Empírica en Pequeñas Propiedades del Perú",
         "description": "Revisión bibliográfica y aplicación empírica de métodos de estadística espacial aplicados a la agricultura de pequeñas propiedades (smallholding) en el Perú. Análisis de autocorrelación espacial y patrones regionales.",
         "tags": [
             "artículo",
@@ -10,7 +10,8 @@
             "autocorrelación"
         ],
         "pdf": "tareas/tarea-00-articulo_1/REVIEW AND EMPIRICAL APPLICATION TO SMALLHOLDING IN PERU_V1.pdf",
-        "thumbnail": "tareas/tarea-00-articulo_1/thumbnail.png"
+        "thumbnail": "tareas/tarea-00-articulo_1/thumbnail.png",
+        "unidad": 1
     },
     {
         "title": "Introducción a la Estadística Espacial",
@@ -21,7 +22,8 @@
             "visualización"
         ],
         "pdf": "tareas/tarea-01-introduccion/ESTADISTICA ESPACIAL - MONOGRAFIA.pdf",
-        "thumbnail": "tareas/tarea-01-introduccion/figuras/thumbnail.png"
+        "thumbnail": "tareas/tarea-01-introduccion/figuras/thumbnail.png",
+        "unidad": 1
     },
     {
         "title": "Dashboard: Pérdidas Agrícolas (ENA)",
@@ -33,7 +35,8 @@
         ],
         "html": "tareas/tarea-02-analisis-espacial/mapa_interactivo_ena.html",
         "r": "tareas/tarea-02-analisis-espacial/DATOS/main.R",
-        "thumbnail": "tareas/tarea-02-analisis-espacial/figuras/image.png"
+        "thumbnail": "tareas/tarea-02-analisis-espacial/figuras/image.png",
+        "unidad": 1
     },
     {
         "title": "Dashboard de Análisis de Vacas",
@@ -45,7 +48,8 @@
         ],
         "html": "tareas/tarea-03-analisis-vacas/analisis_vacas.html",
         "r": "tareas/tarea-03-analisis-vacas/app.R",
-        "thumbnail": "tareas/tarea-03-analisis-vacas/figuras/vaca.jpg"
+        "thumbnail": "tareas/tarea-03-analisis-vacas/figuras/vaca.jpg",
+        "unidad": 1
     },
     {
         "title": "Resolución de Ejercicios: Distribución Gaussiana",
@@ -56,7 +60,8 @@
             "ejercicios"
         ],
         "pdf": "tareas/tarea-04-distribucion-gaussiana/Solucion_de_Ejercicios_Distribucion_Gaussiana.pdf",
-        "thumbnail": "tareas/tarea-04-distribucion-gaussiana/figuras/gaussian.png"
+        "thumbnail": "tareas/tarea-04-distribucion-gaussiana/figuras/gaussian.png",
+        "unidad": 1
     },
     {
         "title": "Inferencia Bayesiana: Modelos Autoregresivos Simultáneos",
@@ -69,7 +74,8 @@
         ],
         "pdf": "tareas/tarea-05-inferencia-bayesiana/Inferencia_Bayesiana_Modelos_Autoregresivos.pdf",
         "video": "tareas/tarea-05-inferencia-bayesiana/Explicacion_Inferencia_Bayesiana_Autoregresiva.mp4",
-        "thumbnail": "tareas/tarea-05-inferencia-bayesiana/figuras/bayesian.png"
+        "thumbnail": "tareas/tarea-05-inferencia-bayesiana/figuras/bayesian.png",
+        "unidad": 1
     },
     {
         "title": "Producción Agrícola: Análisis con Metodología Jenks",
@@ -82,7 +88,8 @@
         ],
         "r": "tareas/tarea-06-metodologia-jenks/analisis_jenks.R",
         "html": "tareas/tarea-06-metodologia-jenks/mapa_coropletico_departamentos.html",
-        "thumbnail": "tareas/tarea-06-metodologia-jenks/figuras/image.png"
+        "thumbnail": "tareas/tarea-06-metodologia-jenks/figuras/image.png",
+        "unidad": 1
     },
     {
         "title": "Análisis Espacial con el Índice de Moran",
@@ -96,10 +103,11 @@
         "pdf": "tareas/tarea-07-indice-moran/Informe_Tarea07_Moran.pdf",
         "r": "tareas/tarea-07-indice-moran/app.R",
         "html": "https://julio-eduardo.shinyapps.io/tarea-07-indice-moran/",
-        "thumbnail": "tareas/tarea-07-indice-moran/mapa_lisa.jpeg"
+        "thumbnail": "tareas/tarea-07-indice-moran/mapa_lisa.jpeg",
+        "unidad": 1
     },
     {
-        "title": "Unidad 2: Práctica de Autocorrelación (Índice de Moran)",
+        "title": "Práctica de Autocorrelación (Índice de Moran)",
         "description": "Práctica de cálculo del Índice de Moran. Incluye hoja de cálculo manual, script en R e interpretación de resultados.",
         "tags": [
             "unidad2",
@@ -107,10 +115,12 @@
             "autocorrelación"
         ],
         "pdf": "tareas/Autocorrelación (IMoran)/Entregable1 hoja calculo manual.pdf",
-        "r": "tareas/Autocorrelación (IMoran)/Entregable2_Script_MoranI.R"
+        "r": "tareas/Autocorrelación (IMoran)/Entregable2_Script_MoranI.R",
+        "unidad": 2,
+        "thumbnail": "tareas/Autocorrelación (IMoran)/thumbnail.png"
     },
     {
-        "title": "Unidad 2: Replicación de Herramientas",
+        "title": "Replicación de Herramientas",
         "description": "Artículo grupal sobre la replicación de herramientas en el análisis de datos espaciales. Enlace al repositorio: https://github.com/valec3/spa-team-act",
         "tags": [
             "unidad2",
@@ -118,10 +128,12 @@
             "herramientas",
             "replicación"
         ],
-        "pdf": "tareas/Replicación de Herramientas/paper.pdf"
+        "pdf": "tareas/Replicación de Herramientas/paper.pdf",
+        "unidad": 2,
+        "thumbnail": "tareas/Replicación de Herramientas/thumbnail.png"
     },
     {
-        "title": "Unidad 2: Integración de Índices de Vegetación",
+        "title": "Integración de Índices de Vegetación",
         "description": "Artículo grupal: Integración de índices de vegetación y estadística espacial para caracterizar la cobertura vegetal en las provincias de Puno 2025.",
         "tags": [
             "unidad2",
@@ -129,6 +141,8 @@
             "vegetación",
             "puno"
         ],
-        "pdf": "tareas/Integración de Índices de Vegetación/Integracion_de_indices_de_vegetacion_y_estadistica_espacial_para_caracterizar_la_cobertura_vegetal_en_las_provincias_de_Puno__2025.pdf"
+        "pdf": "tareas/Integración de Índices de Vegetación/Integracion_de_indices_de_vegetacion_y_estadistica_espacial_para_caracterizar_la_cobertura_vegetal_en_las_provincias_de_Puno__2025.pdf",
+        "unidad": 2,
+        "thumbnail": "tareas/Integración de Índices de Vegetación/thumbnail.png"
     }
 ]

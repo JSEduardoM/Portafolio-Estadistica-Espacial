@@ -200,8 +200,8 @@ async function cargarProyectos() {
         let currentUnit = 0;
         
         proyectos.forEach((p, idx) => {
-            // Determine unit based on title or default to 1
-            let unit = (p.title && p.title.includes('Unidad 2')) ? 2 : 1;
+            // Determine unit based on the 'unidad' property from manifest.json
+            let unit = p.unidad || 1;
             
             if (unit !== currentUnit) {
                 const header = document.createElement('div');
