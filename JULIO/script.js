@@ -265,6 +265,24 @@ function crearTarjetaNexus(p, idx) {
     if (p.zip) {
         buttons += `<button onclick="window.open('${p.zip}', '_blank')" class="btn-ext btn-ext-zip"><i class="bi bi-file-zip"></i> Proyect ZIP</button>`;
     }
+    
+    // Add extra files dynamic buttons
+    if (p.extra_files) {
+        p.extra_files.forEach(f => {
+            let icon = 'bi-file-earmark';
+            let btnClass = 'btn-ext';
+            let onclick = `window.open('${f.path}', '_blank')`;
+            if (f.type === 'pdf') {
+                icon = 'bi-file-earmark-pdf';
+                btnClass = 'btn-ext btn-ext-pdf';
+                onclick = `abrirVisor('${f.path}', ${idx})`;
+            } else if (f.type === 'txt') {
+                icon = 'bi-file-text';
+                btnClass = 'btn-ext';
+            }
+            buttons += `<button onclick="${onclick}" class="${btnClass}"><i class="bi ${icon}"></i> ${f.label}</button>`;
+        });
+    }
 
     // Generar Miniatura si existe
     let thumbnailHtml = '';

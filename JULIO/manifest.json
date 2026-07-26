@@ -116,6 +116,10 @@
         ],
         "pdf": "tareas/Autocorrelación (IMoran)/Entregable1 hoja calculo manual.pdf",
         "r": "tareas/Autocorrelación (IMoran)/Entregable2_Script_MoranI.R",
+        "extra_files": [
+            {"type": "pdf", "label": "Ver Interpretación", "path": "tareas/Autocorrelación (IMoran)/Entregable3_Parrafo_Interpretacion.pdf"},
+            {"type": "txt", "label": "Ver Reporte R", "path": "tareas/Autocorrelación (IMoran)/Reporte_Salida_R.txt"}
+        ],
         "unidad": 2,
         "thumbnail": "tareas/Autocorrelación (IMoran)/thumbnail.png"
     },
@@ -129,6 +133,9 @@
             "replicación"
         ],
         "pdf": "tareas/Replicación de Herramientas/paper.pdf",
+        "extra_files": [
+            {"type": "txt", "label": "Ver Enlace Repo", "path": "tareas/Replicación de Herramientas/LINK REPOSITORIO.txt"}
+        ],
         "unidad": 2,
         "thumbnail": "tareas/Replicación de Herramientas/thumbnail.png"
     },
