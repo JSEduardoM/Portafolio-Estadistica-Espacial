@@ -1,0 +1,56 @@
+Cargando paquete requerido: spData
+To access larger datasets in this package, install the spDataLarge
+package with: `install.packages('spDataLarge',
+repos='https://nowosad.github.io/drat/', type='source')`
+Cargando paquete requerido: sf
+Linking to GEOS 3.14.1, GDAL 3.12.1, PROJ 9.7.1; sf_use_s2() is TRUE
+Avisos:
+1: package 'spdep' was built under R version 4.5.3 
+2: package 'spData' was built under R version 4.5.3 
+3: package 'sf' was built under R version 4.5.3 
+
+[1] 0.2071918
+
+	Moran I test under normality
+
+data:  z_A  
+weights: lw_A    
+
+Moran I statistic standard deviate = 1.2192, p-value = 0.1114
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+        0.2071918        -0.2500000         0.1406250 
+
+
+	Monte-Carlo simulation of Moran I
+
+data:  z_A 
+weights: lw_A  
+number of simulations + 1: 120 
+
+statistic = 0.20719, observed rank = 104.5, p-value = 0.1292
+alternative hypothesis: greater
+
+[1] 0.4875
+
+	Moran I test under normality
+
+data:  z_B  
+weights: lw_rook    
+
+Moran I statistic standard deviate = 2.6574, p-value = 0.003937
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+         0.487500         -0.125000          0.053125 
+
+
+	Monte-Carlo simulation of Moran I
+
+data:  z_B 
+weights: lw_rook  
+number of simulations + 1: 1000 
+
+statistic = 0.4875, observed rank = 1000, p-value = 0.001
+alternative hypothesis: greater
