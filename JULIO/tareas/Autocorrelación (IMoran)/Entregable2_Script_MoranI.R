@@ -42,7 +42,8 @@ moran.test(z_A, lw_A, randomisation = FALSE)
 
 # 5. Prueba de hipotesis por permutaciones (mas robusta con n pequeno)
 set.seed(123)
-moran.mc(z_A, lw_A, nsim = 999)
+# n=5 permite un maximo de 120 permutaciones, por lo que usamos nsim = 119
+moran.mc(z_A, lw_A, nsim = 119)
 # Salida esperada: estadistico observado I = 0.207, p-value similar
 # al de la prueba analitica (del orden de 0.10-0.15), dado que la
 # distribucion nula bajo permutaciones tambien se centra en E[I].
