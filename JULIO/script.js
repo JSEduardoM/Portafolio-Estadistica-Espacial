@@ -197,7 +197,21 @@ async function cargarProyectos() {
         }
 
         container.innerHTML = '';
+        let currentUnit = 0;
+        
         proyectos.forEach((p, idx) => {
+            // Determine unit based on title or default to 1
+            let unit = (p.title && p.title.includes('Unidad 2')) ? 2 : 1;
+            
+            if (unit !== currentUnit) {
+                const header = document.createElement('div');
+                header.className = 'col-12 mt-5 mb-2 nx-header w-100';
+                const unitTitle = unit === 1 ? 'Primera Unidad' : 'Segunda Unidad';
+                header.innerHTML = `<h3 class="fw-bold border-bottom pb-2" style="color: #0b2239;">${unitTitle}</h3>`;
+                container.appendChild(header);
+                currentUnit = unit;
+            }
+            
             const card = crearTarjetaNexus(p, idx);
             container.appendChild(card);
         });

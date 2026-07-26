@@ -97,5 +97,38 @@
         "r": "tareas/tarea-07-indice-moran/app.R",
         "html": "https://julio-eduardo.shinyapps.io/tarea-07-indice-moran/",
         "thumbnail": "tareas/tarea-07-indice-moran/mapa_lisa.jpeg"
+    },
+    {
+        "title": "Unidad 2: Práctica de Autocorrelación (Índice de Moran)",
+        "description": "Práctica de cálculo del Índice de Moran. Incluye hoja de cálculo manual, script en R e interpretación de resultados.",
+        "tags": [
+            "unidad2",
+            "moran",
+            "autocorrelación"
+        ],
+        "pdf": "tareas/Autocorrelación (IMoran)/Entregable1 hoja calculo manual.pdf",
+        "r": "tareas/Autocorrelación (IMoran)/Entregable2_Script_MoranI.R"
+    },
+    {
+        "title": "Unidad 2: Replicación de Herramientas",
+        "description": "Artículo grupal sobre la replicación de herramientas en el análisis de datos espaciales. Enlace al repositorio: https://github.com/valec3/spa-team-act",
+        "tags": [
+            "unidad2",
+            "artículo",
+            "herramientas",
+            "replicación"
+        ],
+        "pdf": "tareas/Replicación de Herramientas/paper.pdf"
+    },
+    {
+        "title": "Unidad 2: Integración de Índices de Vegetación",
+        "description": "Artículo grupal: Integración de índices de vegetación y estadística espacial para caracterizar la cobertura vegetal en las provincias de Puno 2025.",
+        "tags": [
+            "unidad2",
+            "artículo",
+            "vegetación",
+            "puno"
+        ],
+        "pdf": "tareas/Integración de Índices de Vegetación/Integracion_de_indices_de_vegetacion_y_estadistica_espacial_para_caracterizar_la_cobertura_vegetal_en_las_provincias_de_Puno__2025.pdf"
     }
 ]
