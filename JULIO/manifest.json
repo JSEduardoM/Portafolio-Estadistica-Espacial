@@ -11,6 +11,10 @@
         ],
         "pdf": "tareas/tarea-00-articulo_1/REVIEW AND EMPIRICAL APPLICATION TO SMALLHOLDING IN PERU_V1.pdf",
         "thumbnail": "tareas/tarea-00-articulo_1/thumbnail.png",
+        "extra_files": [
+            {"type": "pdf", "label": "Ver ISICVA", "path": "tareas/tarea-00-articulo_1/211_ISICVA.pdf"},
+            {"type": "pdf", "label": "Ver Respuesta a Revisores", "path": "tareas/tarea-00-articulo_1/211_Response_to_Reviewers.pdf"}
+        ],
         "unidad": 1
     },
     {
@@ -164,6 +168,7 @@
             "fragmentación"
         ],
         "pdf": "tareas/articulo_2_Geostatistical Analysis of Land Fragmentation in Peru Using Variogram and Ordinary Kriging An Application to the ENA 2014 Microdata/land-4510154.pdf",
+        "thumbnail": "tareas/articulo_2_Geostatistical Analysis of Land Fragmentation in Peru Using Variogram and Ordinary Kriging An Application to the ENA 2014 Microdata/articulo 2.jpeg",
         "unidad": 2
     },
     {
@@ -178,6 +183,7 @@
             "aulas virtuales"
         ],
         "pdf": "tareas/articulo_3_Comparative Performance Analysis of Structurally Similar Virtual Classrooms in Peru Using JMeter and Locust Under Various Load Techniques/futureinternet-4511793.pdf",
+        "thumbnail": "tareas/articulo_3_Comparative Performance Analysis of Structurally Similar Virtual Classrooms in Peru Using JMeter and Locust Under Various Load Techniques/articulo 3.jpeg",
         "unidad": 2
     }
 ]
