@@ -151,5 +151,33 @@
         "pdf": "tareas/Integración de Índices de Vegetación/Integracion_de_indices_de_vegetacion_y_estadistica_espacial_para_caracterizar_la_cobertura_vegetal_en_las_provincias_de_Puno__2025.pdf",
         "unidad": 2,
         "thumbnail": "tareas/Integración de Índices de Vegetación/thumbnail.png"
+    },
+    {
+        "title": "Geostatistical Analysis of Land Fragmentation in Peru Using Variogram and Ordinary Kriging: An Application to the ENA 2014 Microdata",
+        "description": "Estudio geoestadístico sobre la fragmentación de tierras en el Perú, usando variogramas y kriging ordinario con la microdata de la ENA 2014.",
+        "tags": [
+            "unidad2",
+            "artículo",
+            "geoestadística",
+            "variograma",
+            "kriging",
+            "fragmentación"
+        ],
+        "pdf": "tareas/articulo_2_Geostatistical Analysis of Land Fragmentation in Peru Using Variogram and Ordinary Kriging An Application to the ENA 2014 Microdata/land-4510154.pdf",
+        "unidad": 2
+    },
+    {
+        "title": "Comparative Performance Analysis of Structurally Similar Virtual Classrooms in Peru Using JMeter and Locust Under Various Load Techniques",
+        "description": "Estudio comparativo del rendimiento de aulas virtuales en Perú usando Apache JMeter y Locust con distintas técnicas de carga.",
+        "tags": [
+            "unidad2",
+            "artículo",
+            "rendimiento",
+            "jmeter",
+            "locust",
+            "aulas virtuales"
+        ],
+        "pdf": "tareas/articulo_3_Comparative Performance Analysis of Structurally Similar Virtual Classrooms in Peru Using JMeter and Locust Under Various Load Techniques/futureinternet-4511793.pdf",
+        "unidad": 2
     }
 ]
