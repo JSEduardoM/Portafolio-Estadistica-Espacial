@@ -224,6 +224,11 @@ async function cargarProyectos() {
     }
 }
 
+function urlEncode(path) {
+    if (!path) return path;
+    return encodeURI(path);
+}
+
 function crearTarjetaNexus(p, idx) {
     const hasThumbnail = !!(p.thumbnail || p.img);
     const col = document.createElement('div');
@@ -250,20 +255,20 @@ function crearTarjetaNexus(p, idx) {
     // Generar Botones específicos
     let buttons = '';
     if (p.pdf) {
-        buttons += `<button onclick="abrirVisor('${p.pdf}', ${idx})" class="btn-ext btn-ext-pdf"><i class="bi bi-file-earmark-pdf"></i> Ver PDF</button>`;
+        buttons += `<button onclick="abrirVisor('${urlEncode(p.pdf)}', ${idx})" class="btn-ext btn-ext-pdf"><i class="bi bi-file-earmark-pdf"></i> Ver PDF</button>`;
     }
     if (p.r) {
-        buttons += `<button onclick="window.open('${p.r}', '_blank')" class="btn-ext btn-ext-r"><i class="bi bi-github"></i> Código R</button>`;
+        buttons += `<button onclick="window.open('${urlEncode(p.r)}', '_blank')" class="btn-ext btn-ext-r"><i class="bi bi-github"></i> Código R</button>`;
     }
     if (p.html) {
         const btnLabel = p.tags && p.tags.includes('shiny') ? 'Ver Dashboard' : 'Ver Mapas';
-        buttons += `<button onclick="abrirHTML('${p.html}', ${idx})" class="btn-ext btn-ext-html"><i class="bi bi-globe"></i> ${btnLabel}</button>`;
+        buttons += `<button onclick="abrirHTML('${urlEncode(p.html)}', ${idx})" class="btn-ext btn-ext-html"><i class="bi bi-globe"></i> ${btnLabel}</button>`;
     }
     if (p.video) {
-        buttons += `<button onclick="abrirVideo('${p.video}')" class="btn-ext btn-ext-video"><i class="bi bi-play-circle"></i> Ver Video</button>`;
+        buttons += `<button onclick="abrirVideo('${urlEncode(p.video)}')" class="btn-ext btn-ext-video"><i class="bi bi-play-circle"></i> Ver Video</button>`;
     }
     if (p.zip) {
-        buttons += `<button onclick="window.open('${p.zip}', '_blank')" class="btn-ext btn-ext-zip"><i class="bi bi-file-zip"></i> Proyect ZIP</button>`;
+        buttons += `<button onclick="window.open('${urlEncode(p.zip)}', '_blank')" class="btn-ext btn-ext-zip"><i class="bi bi-file-zip"></i> Proyect ZIP</button>`;
     }
     
     // Add extra files dynamic buttons
@@ -271,11 +276,11 @@ function crearTarjetaNexus(p, idx) {
         p.extra_files.forEach(f => {
             let icon = 'bi-file-earmark';
             let btnClass = 'btn-ext';
-            let onclick = `window.open('${f.path}', '_blank')`;
+            let onclick = `window.open('${urlEncode(f.path)}', '_blank')`;
             if (f.type === 'pdf') {
                 icon = 'bi-file-earmark-pdf';
                 btnClass = 'btn-ext btn-ext-pdf';
-                onclick = `abrirVisor('${f.path}', ${idx})`;
+                onclick = `abrirVisor('${urlEncode(f.path)}', ${idx})`;
             } else if (f.type === 'txt') {
                 icon = 'bi-file-text';
                 btnClass = 'btn-ext';
@@ -287,7 +292,7 @@ function crearTarjetaNexus(p, idx) {
     // Generar Miniatura si existe
     let thumbnailHtml = '';
     if (hasThumbnail) {
-        const imgSrc = p.thumbnail || p.img;
+        const imgSrc = urlEncode(p.thumbnail || p.img);
         thumbnailHtml = `<div class="card-thumbnail-wrap">
                             <img src="${imgSrc}" alt="${p.title}" class="card-thumbnail-img">
                             <div class="card-thumbnail-overlay"></div>
